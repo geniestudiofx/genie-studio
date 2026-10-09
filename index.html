@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Sora:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column — hero, two product panels side by side, install steps, footer. Dark-first, single look. */
+:root{
+  --bg:#0d0b1a; --panel:#16132a; --line:#2a2548; --fg:#f3f1ff; --muted:#a9a2cf;
+  --accent:#8b7bff; --accent-ink:#0d0b1a; --gold:#ffc24b;
+  --display:'Unbounded',system-ui,sans-serif; --body:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:20px;padding-block:0}
+.wrap{max-width:1080px;margin:0 auto}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.1;margin:0}
+p{margin:0}
+
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.brand b{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em}
+.brand b span{color:var(--accent)}
+.brand small{font-size:11px;letter-spacing:.4em;color:var(--muted);font-weight:600}
+.navlinks{display:flex;gap:22px;flex-wrap:wrap}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:14px}
+.navlinks a:hover{color:var(--fg)}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:center;padding-block:48px 64px}
+.hero h1{font-size:clamp(36px,6vw,64px);letter-spacing:-.03em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);font-size:18px;max-width:46ch;margin-top:18px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:13px 22px;font:600 15px var(--body);text-decoration:none;border:0;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.soon{background:var(--panel);color:var(--muted);cursor:default;box-shadow:inset 0 0 0 1px var(--line)}
+.lamp{width:100%;max-width:420px;justify-self:center}
+
+.tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.product{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.shot{aspect-ratio:16/9;max-width:100%;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pbody{padding:24px;display:flex;flex-direction:column;gap:14px;flex:1}
+.pbody h3{font-size:24px}
+.pbody p{color:var(--muted)}
+.feats{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.feats li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.feats svg{flex:none;margin-top:4px}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:999px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.pbody .cta{margin-top:auto;padding-top:8px}
+
+/* CRT preview */
+.crt{background:#05050a}
+.crt .screen{width:78%;aspect-ratio:4/3;max-width:100%;border-radius:18% / 22%;background:radial-gradient(ellipse at center,#2f6b5a 0%,#123128 55%,#050c0a 100%);position:relative;overflow:hidden;box-shadow:0 0 0 10px #1c1a22,0 0 0 12px #2a2733,0 0 60px rgba(90,255,190,.15)}
+.crt .screen::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px)}
+.crt .screen::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,0,60,.08),rgba(0,255,120,.06),rgba(0,90,255,.08));mix-blend-mode:screen}
+.crt .rec{position:absolute;left:12%;top:12%;font-family:var(--mono);font-size:clamp(10px,1.6vw,14px);color:#d9ffe9;text-shadow:0 0 6px #7dffc0;z-index:1}
+.crt .tc{position:absolute;right:12%;bottom:12%;font-family:var(--mono);font-size:clamp(10px,1.6vw,14px);color:#d9ffe9;text-shadow:0 0 6px #7dffc0;z-index:1}
+.crt .roll{position:absolute;left:0;right:0;height:18%;background:linear-gradient(transparent,rgba(255,255,255,.08),transparent);animation:roll 4s linear infinite;z-index:1}
+@keyframes roll{from{top:-20%}to{top:110%}}
+
+/* 3D preview */
+.e3d{background:radial-gradient(ellipse at 50% 120%,#2a2450 0%,#0b0916 60%)}
+.e3d .word{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,64px);letter-spacing:-.02em;color:#ffe3a1;
+  text-shadow:0 1px 0 #e0a73a,0 2px 0 #d39a30,0 3px 0 #c58c26,0 4px 0 #b47d1e,0 5px 0 #a26e17,0 6px 0 #8e5f11,0 8px 18px rgba(0,0,0,.6),0 20px 40px rgba(139,123,255,.35);
+  transform:perspective(500px) rotateX(18deg) rotateY(-12deg)}
+.e3d .floor{position:absolute;bottom:0;left:0;right:0;height:32%;background:linear-gradient(rgba(139,123,255,.12),transparent)}
+
+section{padding-block:56px}
+.sechead{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.sechead h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em}
+.sechead p{color:var(--muted);max-width:60ch}
+
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:s}
+.step{border-top:1px solid var(--line);padding-top:18px;display:flex;flex-direction:column;gap:8px}
+.step b{font-family:var(--mono);color:var(--accent);font-size:13px}
+.step h3{font-size:18px}
+.step p{color:var(--muted);font-size:15px}
+
+.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.why div{display:flex;flex-direction:column;gap:6px}
+.why h3{font-size:17px}
+.why p{color:var(--muted);font-size:15px}
+
+footer{border-top:1px solid var(--line);padding-block:32px 48px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+footer a{color:var(--fg);text-decoration:none}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .lamp{max-width:280px;order:-1}
+  .products,.steps,.why{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){.crt .roll{animation:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#top" aria-label="Genie Studio home">
+      <svg width="40" height="28" viewBox="0 0 220 150" aria-hidden="true">
+        <path d="M40 92 C40 70 70 64 102 64 C132 64 152 70 162 78 L192 50 C197 46 202 51 197 56 L168 90 C162 104 142 112 102 112 C70 112 40 108 40 92 Z" fill="#8b7bff"/>
+        <path d="M44 84 C18 74 12 106 42 104" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/>
+        <ellipse cx="98" cy="64" rx="26" ry="8" fill="#c9c2ff"/><circle cx="98" cy="50" r="8" fill="#c9c2ff"/>
+        <path d="M80 124 L120 124 L113 111 L87 111 Z" fill="#6f61e0"/>
+      </svg>
+      <b>genie<span>.</span></b><small>STUDIO</small>
+    </a>
+    <div class="navlinks">
+      <a href="#plugins">Plugins</a>
+      <a href="#install">Install</a>
+      <a href="#about">About</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div>
+      <span class="tag">Free · Open source · Windows</span>
+      <h1 style="margin-top:14px">Make a wish. <em>Edit</em> the magic in.</h1>
+      <p>Genie Studio makes free tools for video editors. Get a retro CRT TV look with CRT Genie, or build 3D titles inside Premiere Pro with Element Genie.</p>
+      <div class="cta">
+        <a class="btn primary" href="#plugins">See the plugins</a>
+        <a class="btn ghost" href="#install">How to install</a>
+      </div>
+    </div>
+    <svg class="lamp" viewBox="0 -10 220 150" role="img" aria-label="Genie lamp with a wish swirl">
+      <path d="M193 44 C205 30 186 18 176 26 C166 34 180 46 190 36 C200 26 196 10 184 6" fill="none" stroke="#8b7bff" stroke-width="4" stroke-linecap="round"/>
+      <path d="M184 2 C185.5 8 186 8.5 192 10 C186 11.5 185.5 12 184 18 C182.5 12 182 11.5 176 10 C182 8.5 182.5 8 184 2 Z" fill="#ffffff"/>
+      <path d="M150 20 C151 24 151.5 24.5 155 25.5 C151.5 26.5 151 27 150 31 C149 27 148.5 26.5 145 25.5 C148.5 24.5 149 24 150 20 Z" fill="#8b7bff"/>
+      <path d="M40 92 C40 70 70 64 102 64 C132 64 152 70 162 78 L192 50 C197 46 202 51 197 56 L168 90 C162 104 142 112 102 112 C70 112 40 108 40 92 Z" fill="#8b7bff"/>
+      <path d="M44 84 C18 74 12 106 42 104" fill="none" stroke="#8b7bff" stroke-width="7" stroke-linecap="round"/>
+      <ellipse cx="98" cy="64" rx="26" ry="7" fill="#c9c2ff"/>
+      <circle cx="98" cy="51" r="7" fill="#c9c2ff"/>
+      <path d="M80 122 L120 122 L113 111 L87 111 Z" fill="#6f61e0"/>
+      <path d="M58 88 C70 82 90 80 110 81" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </header>
+
+  <section id="plugins" style="padding-top:0">
+    <div class="sechead">
+      <span class="tag">The plugins</span>
+      <h2>Two tools, both free</h2>
+    </div>
+    <div class="products">
+      <article class="product">
+        <div class="shot crt" aria-hidden="true">
+          <div class="screen"><div class="roll"></div><span class="rec">● PLAY</span><span class="tc">00:12:48:07</span></div>
+        </div>
+        <div class="pbody">
+          <span class="tag">Standalone app</span>
+          <h3>CRT Genie</h3>
+          <p>Drop in your footage and give it the look of an old CRT TV or film: scanlines, glow, colour bleed, curvature and grain. Then export it back out.</p>
+          <ul class="feats">
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>CRT and film-look presets</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Live preview while you tweak</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>No editing software needed</li>
+          </ul>
+          <div class="meta"><span class="chip">Windows 10 / 11</span><span class="chip">.exe</span></div>
+          <div class="cta" data-dl="crt"></div>
+        </div>
+      </article>
+
+      <article class="product">
+        <div class="shot e3d" aria-hidden="true">
+          <div class="floor"></div>
+          <span class="word">GENIE</span>
+        </div>
+        <div class="pbody">
+          <span class="tag">Premiere Pro & After Effects plugin</span>
+          <h3>Element Genie</h3>
+          <p>3D text, logos and models right in your timeline. Click Scene Setup, design your title, press OK, then keyframe it in Effect Controls.</p>
+          <ul class="feats">
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>28 materials, 10 bevel styles, 18 icons</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Soft shadows, reflections, motion blur</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5 L5.5 11 L12 3" fill="none" stroke="#8b7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Import OBJ, FBX, glTF models and SVG logos</li>
+          </ul>
+          <div class="meta"><span class="chip">Windows 10 / 11</span><span class="chip">Premiere Pro</span><span class="chip">After Effects</span></div>
+          <div class="cta" data-dl="element"></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="sechead">
+      <span class="tag">Install</span>
+      <h2>Up and running in a minute</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><b>Step 1</b><h3>Download</h3><p>Grab the installer for the tool you want from the buttons above.</p></div>
+      <div class="step"><b>Step 2</b><h3>Run the installer</h3><p>Click Yes when Windows asks. If SmartScreen appears, choose More info, then Run anyway.</p></div>
+      <div class="step"><b>Step 3</b><h3>Open and create</h3><p>CRT Genie opens on its own. For Element Genie, restart Premiere and find it under Effects › Element Genie.</p></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="why">
+      <div><h3>Free forever</h3><p>The core tools cost nothing. No watermark, no trial timer.</p></div>
+      <div><h3>Open source</h3><p>The code is public, so anyone can check it, learn from it or help improve it.</p></div>
+      <div><h3>Made by an editor</h3><p>Built for real edits: TikTok, YouTube, music videos and event promos.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Genie Studio</span>
+    <span>YouTube: <a href="https://www.youtube.com/@GenieStudio">@GenieStudio</a></span>
+  </footer>
+</div>
+
+<script>
+// Installer file names in this folder. Empty = "Coming soon".
+const DOWNLOADS = {
+  crt: "CRTGenie-Setup.exe",
+  element: "ElementGenie-Setup.exe"
+};
+document.querySelectorAll('[data-dl]').forEach(box => {
+  const url = DOWNLOADS[box.dataset.dl];
+  if (url) {
+    box.innerHTML = '<a class="btn primary" download></a>';
+    const a = box.firstChild; a.href = url; a.textContent = 'Download for Windows';
+  } else {
+    box.innerHTML = '<span class="btn soon">Download coming soon</span>';
+  }
+});
+</script>
+
+</body>
+</html>
