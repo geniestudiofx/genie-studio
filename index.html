@@ -46,7 +46,13 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 .fine{color:var(--muted);font-size:13px;margin-top:14px}
 
 /* phone mock: webcam on top, gameplay below, title on the line */
-.phone{justify-self:center;width:min(270px,100%);aspect-ratio:9/16;border-radius:30px;padding:10px;background:#05040c;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(139,123,255,.45)}
+.phone{justify-self:center;width:min(300px,100%);aspect-ratio:9/16;border-radius:30px;padding:10px;background:#05040c;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(139,123,255,.45)}
+.phone{position:relative}
+.ad{display:none;width:100%;height:100%;object-fit:cover;border-radius:22px;background:#000}
+.has-ad .ad{display:block}
+.has-ad .screen{display:none}
+.unmute{display:none;position:absolute;left:50%;bottom:22px;transform:translateX(-50%);border:0;border-radius:99px;padding:7px 14px;background:rgba(13,11,26,.8);color:var(--fg);font:600 12px var(--body);cursor:pointer}
+.has-ad .unmute{display:block}
 .screen{position:relative;height:100%;border-radius:22px;overflow:hidden;display:grid;grid-template-rows:42% 58%}
 .cam{background:radial-gradient(circle at 50% 44%,#b3a8ff 0 15%,transparent 15.5%),radial-gradient(ellipse 34% 30% at 50% 100%,#6a5acd 0 98%,transparent 100%),linear-gradient(160deg,#2b2350,#151127)}
 .game{background:linear-gradient(180deg,#5aa0d8 0 38%,#c9a46a 38% 41%,#8a6a3f 41% 100%);position:relative}
@@ -69,6 +75,15 @@ section h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin-top:10px}
 .step h3{font-size:17px}
 .step p{color:var(--muted);font-size:14px;margin-top:8px}
 
+.tour{display:grid;gap:56px;margin-top:40px}
+.stop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);gap:36px;align-items:center}
+.stop:nth-child(even){grid-template-columns:minmax(0,2.2fr) minmax(0,1fr)}
+.stop:nth-child(even) .txt{order:2}
+.num{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--accent);color:var(--accent-ink);font:700 17px var(--display);margin-bottom:14px}
+.stop h3{font-size:22px}
+.stop p{color:var(--muted);margin-top:10px}
+.pic{display:block;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 24px 60px -24px rgba(139,123,255,.35)}
+.pic img{display:block;width:100%;height:auto}
 .features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:32px}
 .feat{border:1px solid var(--line);border-radius:18px;padding:22px}
 .feat h3{font-size:16px}
@@ -87,6 +102,12 @@ section h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin-top:10px}
 .req b{display:block;font-size:14px}
 .req span{color:var(--muted);font-size:13px}
 
+.minih{font-size:20px;margin-top:44px}
+.install{margin:16px 0 0;padding:0;list-style:none;counter-reset:i;display:grid;gap:12px;max-width:760px}
+.install li{counter-increment:i;position:relative;padding:14px 16px 14px 56px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:15px}
+.install li::before{content:counter(i);position:absolute;left:14px;top:13px;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:700 14px var(--display)}
+.install b{color:var(--fg)}
+code{font-family:var(--mono);font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px;word-break:break-all}
 footer{border-top:1px solid var(--line);padding-block:32px 48px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
 footer nav{padding:0;gap:18px}
 footer a{color:var(--muted)}
@@ -96,6 +117,8 @@ footer a{color:var(--muted)}
   .steps,.reqs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .features{grid-template-columns:1fr 1fr}
   .price{grid-template-columns:1fr}
+  .stop,.stop:nth-child(even){grid-template-columns:1fr;gap:18px}
+  .stop:nth-child(even) .txt{order:0}
 }
 @media (max-width:540px){
   .steps,.features,.reqs{grid-template-columns:1fr}
@@ -122,13 +145,17 @@ footer a{color:var(--muted)}
     <h1>Your stream, <em>already cut</em> into TikToks.</h1>
     <p class="lead">Paste a Twitch VOD or clip. Clip Genie finds the best moments, puts your webcam and gameplay into a vertical video, and gets it ready to post. No editing skills needed.</p>
     <div class="cta">
-      <a class="btn primary" href="#download">Get Clip Genie</a>
+      <a class="btn primary" href="#download">Early access</a>
       <a class="btn ghost" href="#how">How it works</a>
     </div>
-    <p class="fine">Free trial: your first 3 streams or clips. Sign in with Twitch.</p>
+    <p class="fine">Invite-only early access. Windows 10 / 11.</p>
   </div>
-  <div class="phone" aria-hidden="true">
-    <div class="screen">
+  <div class="phone">
+    <!-- The 9:16 advert: put it next to this page as advert.mp4. Until it's there, the drawn phone below shows. -->
+    <video class="ad" src="advert.mp4" poster="advert-poster.jpg" autoplay muted loop playsinline preload="metadata"
+      onloadeddata="this.parentNode.classList.add('has-ad')" aria-label="Clip Genie advert"></video>
+    <button class="unmute" type="button" onclick="var v=this.previousElementSibling;v.muted=!v.muted;this.textContent=v.muted?'🔇 Sound off':'🔊 Sound on'">🔇 Sound off</button>
+    <div class="screen" aria-hidden="true">
       <div class="cam"></div>
       <div class="game"></div>
       <div class="ttl">He did <b>not</b> see that coming</div>
@@ -141,11 +168,24 @@ footer a{color:var(--muted)}
 <section id="how">
   <p class="tag">How it works</p>
   <h2>Four steps from VOD to video</h2>
-  <div class="steps">
-    <div class="step"><h3>Paste a link</h3><p>A whole Twitch VOD, just part of one (pick a start and end time), a Twitch clip or a video file.</p></div>
-    <div class="step"><h3>Pick the moments</h3><p>It listens to you, reads your chat and checks viewer clips, then shows the moments worth posting and why.</p></div>
-    <div class="step"><h3>Tweak it</h3><p>Change the look, subtitles, sound and cuts. A live 9:16 preview shows exactly what you'll get.</p></div>
-    <div class="step"><h3>Export</h3><p>Save the MP4 to your PC, or scan a QR code to grab it on your phone and post it.</p></div>
+  <p class="sub">Real screenshots from Clip Genie, made from one of our own streams.</p>
+  <div class="tour">
+    <div class="stop">
+      <div class="txt"><span class="num">1</span><h3>Paste a link</h3><p>Pick an editing style, then paste a Twitch VOD, a Twitch clip or a video file. Only want part of a long VOD? Pick a start and end time.</p></div>
+      <a class="pic" href="shots/1-add-stream.jpg"><img src="shots/1-add-stream.jpg" alt="Clip Genie home screen: pick a style, paste a Twitch link, finished TikToks below" loading="lazy" width="1600" height="944"></a>
+    </div>
+    <div class="stop">
+      <div class="txt"><span class="num">2</span><h3>Pick the moments</h3><p>Clip Genie listens to you, reads your chat and checks viewer clips, then ranks the best moments with a reason for each. Tick the ones you want.</p></div>
+      <a class="pic" href="shots/2-pick-moments.jpg"><img src="shots/2-pick-moments.jpg" alt="Ranked moments list with scores, reasons and Make TikTok buttons" loading="lazy" width="1600" height="516"></a>
+    </div>
+    <div class="stop">
+      <div class="txt"><span class="num">3</span><h3>Tweak it</h3><p>Every TikTok opens in the editor: look, subtitles, chat, kill feed, sound, cuts and a timeline. You see the 9:16 video right there.</p></div>
+      <a class="pic" href="shots/3-edit.jpg"><img src="shots/3-edit.jpg" alt="The editor: 9:16 preview with webcam on top and gameplay below, style options on the right" loading="lazy" width="1600" height="1000"></a>
+    </div>
+    <div class="stop">
+      <div class="txt"><span class="num">4</span><h3>Export</h3><p>Title and caption are written for you. Save the MP4 to your PC, or scan a QR code to get it straight onto your phone.</p></div>
+      <a class="pic" href="shots/4-export.jpg"><img src="shots/4-export.jpg" alt="Export panel with title, caption, Export video and Export to phone buttons" loading="lazy" width="1600" height="1000"></a>
+    </div>
   </div>
 </section>
 
@@ -164,16 +204,16 @@ footer a{color:var(--muted)}
 
 <section id="price">
   <p class="tag">Price</p>
-  <h2>Try it free, then keep it cheap</h2>
-  <p class="sub">Sign in with your Twitch account to start. No card needed for the trial.</p>
+  <h2>Free while it's in testing</h2>
+  <p class="sub">Testers get the full app for free. A cheap paid version comes later.</p>
   <div class="price">
     <div class="plan">
-      <h3>Free trial</h3>
-      <p class="big">3 streams</p>
+      <h3>Early access</h3>
+      <p class="big">Free</p>
       <ul>
-        <li>Your first 3 VODs or clips</li>
-        <li>All editing tools and looks</li>
-        <li>Videos carry a small Clip Genie mark</li>
+        <li>Every editing tool and look</li>
+        <li>No watermark</li>
+        <li>Your feedback shapes what comes next</li>
       </ul>
     </div>
     <div class="plan hi">
@@ -191,16 +231,28 @@ footer a{color:var(--muted)}
 <section id="download">
   <p class="tag">Download</p>
   <h2>Get Clip Genie</h2>
-  <p class="sub">Clip Genie is in testing right now. The public download is coming soon.</p>
+  <p class="sub">Clip Genie is invite-only while it's in testing. If you've been invited, your private download link is in the message I sent you. It only opens for your account, so please don't share it.</p>
   <div class="cta">
-    <span class="btn soon" aria-disabled="true">Download for Windows · coming soon</span>
+    <span class="btn soon" aria-disabled="true">🔒 Invite only</span>
   </div>
+  <p class="fine">Early test version: things can break. When they do, tell me and I'll fix them.</p>
   <div class="reqs">
     <div class="req"><b>Windows 10 / 11</b><span>64-bit</span></div>
-    <div class="req"><b>NVIDIA graphics card</b><span>Recommended for speed</span></div>
-    <div class="req"><b>Internet</b><span>To download streams and sign in</span></div>
-    <div class="req"><b>Twitch account</b><span>For the free trial</span></div>
+    <div class="req"><b>5 GB free space</b><span>App + speech model</span></div>
+    <div class="req"><b>NVIDIA graphics card</b><span>Much faster. Works without, just slower</span></div>
+    <div class="req"><b>Internet</b><span>To download your streams</span></div>
   </div>
+
+  <h3 class="minih">Install it</h3>
+  <ol class="install">
+    <li><b>Unzip it.</b> Right-click the zip, then choose <i>Extract All</i>.</li>
+    <li><b>Double-click "Install Clip Genie.cmd".</b> If Windows says <i>"Windows protected your PC"</i>, click <i>More info</i>, then <i>Run anyway</i>. The test version isn't signed yet.</li>
+    <li><b>Answer 3 quick questions:</b> your Twitch name, music and sounds.</li>
+    <li><b>Paste a VOD or clip link</b> and press <i>Make TikToks</i>. The first one takes longer because it downloads the speech model once.</li>
+  </ol>
+
+  <h3 class="minih">Found a problem?</h3>
+  <p class="sub">Reply to the DM I sent you with what went wrong, the stream link and roughly when. If something breaks, also send the file <code>%APPDATA%\GenieStudioFX\ClipGenie\engine.log</code>. Paste that line into the File Explorer address bar to find it.</p>
 </section>
 
 <footer>
