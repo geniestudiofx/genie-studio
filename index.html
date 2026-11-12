@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clip Genie · Genie Studio FX</title>
 <meta name="description" content="Clip Genie turns your Twitch VODs and clips into ready-to-post TikToks. Paste a link, pick the moments, export.">
-<link rel="icon" href="favicon.ico">
+<link rel="icon" type="image/png" href="genie-studio-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Sora:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -27,9 +27,14 @@ p{margin:0}
 
 nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
-.brand img{width:34px;height:34px;border-radius:9px}
+.brand img{width:40px;height:40px;border-radius:10px}
 .brand b{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em}
 .brand b span{color:var(--accent)}
+.brand small{font-size:11px;letter-spacing:.4em;color:var(--muted);font-weight:600}
+.app{display:flex;align-items:center;gap:14px}
+.app img{width:56px;height:56px;border-radius:14px;box-shadow:0 8px 24px -8px rgba(139,123,255,.6)}
+.app b{display:block;font:700 22px var(--display);letter-spacing:-.02em}
+.app .tag{display:block;margin-top:2px}
 .navlinks{display:flex;gap:22px;flex-wrap:wrap}
 .navlinks a{color:var(--muted);text-decoration:none;font-size:14px}
 .navlinks a:hover{color:var(--fg)}
@@ -48,11 +53,13 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 /* phone mock: webcam on top, gameplay below, title on the line */
 .phone{justify-self:center;width:min(300px,100%);aspect-ratio:9/16;border-radius:30px;padding:10px;background:#05040c;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(139,123,255,.45)}
 .phone{position:relative}
-.ad{display:none;width:100%;height:100%;object-fit:cover;border-radius:22px;background:#000}
-.has-ad .ad{display:block}
-.has-ad .screen{display:none}
-.unmute{display:none;position:absolute;left:50%;bottom:22px;transform:translateX(-50%);border:0;border-radius:99px;padding:7px 14px;background:rgba(13,11,26,.8);color:var(--fg);font:600 12px var(--body);cursor:pointer}
-.has-ad .unmute{display:block}
+.ad{display:block;width:100%;height:100%;object-fit:cover;border-radius:22px;background:#000;cursor:pointer}
+.phone .screen{display:none}
+.no-ad .ad,.no-ad .unmute,.no-ad .playbtn{display:none}
+.no-ad .screen{display:grid}
+.unmute{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);border:0;border-radius:99px;padding:7px 14px;background:rgba(13,11,26,.8);color:var(--fg);font:600 12px var(--body);cursor:pointer}
+.playbtn{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:68px;border:0;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:26px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.paused .playbtn{display:block}
 .screen{position:relative;height:100%;border-radius:22px;overflow:hidden;display:grid;grid-template-rows:42% 58%}
 .cam{background:radial-gradient(circle at 50% 44%,#b3a8ff 0 15%,transparent 15.5%),radial-gradient(ellipse 34% 30% at 50% 100%,#6a5acd 0 98%,transparent 100%),linear-gradient(160deg,#2b2350,#151127)}
 .game{background:linear-gradient(180deg,#5aa0d8 0 38%,#c9a46a 38% 41%,#8a6a3f 41% 100%);position:relative}
@@ -130,7 +137,7 @@ footer a{color:var(--muted)}
 <div class="wrap" id="top">
 
 <nav>
-  <a class="brand" href="#top"><img src="icon.png" alt=""><b>Clip <span>Genie</span></b></a>
+  <a class="brand" href="#top" aria-label="Genie Studio FX home"><img src="genie-studio-logo.png" alt="" width="40" height="40"><b>genie<span>.</span></b><small>STUDIO FX</small></a>
   <div class="navlinks">
     <a href="#how">How it works</a>
     <a href="#features">Features</a>
@@ -141,7 +148,7 @@ footer a{color:var(--muted)}
 
 <header class="hero">
   <div>
-    <p class="tag">For Twitch streamers · Windows</p>
+    <div class="app"><img src="icon.png" alt="Clip Genie app icon"><div><b>Clip Genie</b><span class="tag">For Twitch streamers · Windows</span></div></div>
     <h1>Your stream, <em>already cut</em> into TikToks.</h1>
     <p class="lead">Paste a Twitch VOD or clip. Clip Genie finds the best moments, puts your webcam and gameplay into a vertical video, and gets it ready to post. No editing skills needed.</p>
     <div class="cta">
@@ -152,9 +159,10 @@ footer a{color:var(--muted)}
   </div>
   <div class="phone">
     <!-- The 9:16 advert: put it next to this page as advert.mp4. Until it's there, the drawn phone below shows. -->
-    <video class="ad" src="advert.mp4" poster="advert-poster.jpg" autoplay muted loop playsinline preload="metadata"
-      onloadeddata="this.parentNode.classList.add('has-ad')" aria-label="Clip Genie advert"></video>
-    <button class="unmute" type="button" onclick="var v=this.previousElementSibling;v.muted=!v.muted;this.textContent=v.muted?'🔇 Sound off':'🔊 Sound on'">🔇 Sound off</button>
+    <video class="ad" id="ad" src="advert.mp4" poster="advert-poster.jpg" autoplay muted loop playsinline preload="auto"
+      onerror="this.parentNode.classList.add('no-ad')" aria-label="Clip Genie advert"></video>
+    <button class="playbtn" id="adPlay" type="button" aria-label="Play the advert">▶</button>
+    <button class="unmute" id="adSound" type="button">🔇 Sound off</button>
     <div class="screen" aria-hidden="true">
       <div class="cam"></div>
       <div class="game"></div>
@@ -264,5 +272,21 @@ footer a{color:var(--muted)}
 </footer>
 
 </div>
+<script>
+(function () {
+  var v = document.getElementById("ad"), box = v.parentNode;
+  var play = document.getElementById("adPlay"), snd = document.getElementById("adSound");
+  function sync() { box.classList.toggle("paused", v.paused); }
+  function go() { var p = v.play(); if (p && p.catch) p.catch(sync); sync(); }
+  v.addEventListener("play", sync); v.addEventListener("pause", sync);
+  v.addEventListener("click", function () { v.paused ? go() : v.pause(); });
+  play.addEventListener("click", go);
+  snd.addEventListener("click", function () {
+    v.muted = !v.muted; snd.textContent = v.muted ? "🔇 Sound off" : "🔊 Sound on";
+    if (v.paused) go();
+  });
+  go();   // autoplay can be blocked (low power mode, data saver): then the play button shows
+})();
+</script>
 </body>
 </html>
