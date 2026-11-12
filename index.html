@@ -53,14 +53,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;paddi
 /* phone mock: webcam on top, gameplay below, title on the line */
 .phone{justify-self:center;width:min(300px,100%);aspect-ratio:9/16;border-radius:30px;padding:10px;background:#05040c;box-shadow:0 0 0 1px var(--line),0 30px 80px -20px rgba(139,123,255,.45)}
 .phone{position:relative}
-.ad{display:block;width:100%;height:100%;object-fit:cover;border-radius:22px;background:#000;cursor:pointer}
-.unmute{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);border:0;border-radius:99px;padding:7px 14px;background:rgba(13,11,26,.8);color:var(--fg);font:600 12px var(--body);cursor:pointer}
-.playbtn{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:68px;border:0;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:26px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.paused .playbtn{display:block}
-.native .unmute,.native .playbtn{display:none}
-.adlink{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:12px 20px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font:600 15px var(--body);text-decoration:none;white-space:nowrap}
-.broken .adlink{display:block}
-.broken .playbtn,.broken .unmute{display:none}
+.ad{display:block;width:100%;height:100%;object-fit:cover;border-radius:22px;background:#000}
 
 section{padding-block:56px;border-top:1px solid var(--line)}
 section h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin-top:10px}
@@ -151,9 +144,6 @@ footer a{color:var(--muted)}
     <!-- The 9:16 advert (advert.mp4). advert-poster.jpg shows until it plays. -->
     <video class="ad" id="ad" src="advert.mp4?v=2" poster="advert-poster.jpg" autoplay muted loop playsinline preload="auto"
       aria-label="Clip Genie advert"></video>
-    <button class="playbtn" id="adPlay" type="button" aria-label="Play the advert">▶</button>
-    <button class="unmute" id="adSound" type="button">🔇 Sound off</button>
-    <a class="adlink" href="advert.mp4" target="_blank" rel="noopener">▶ Open the advert</a>
   </div>
 </header>
 
@@ -257,30 +247,8 @@ footer a{color:var(--muted)}
 
 </div>
 <script>
-(function () {
-  var v = document.getElementById("ad"), box = v.parentNode;
-  var play = document.getElementById("adPlay"), snd = document.getElementById("adSound");
-  function sync() { box.classList.toggle("paused", v.paused && !v.controls); }
-  function native() { v.controls = true; box.classList.add("native"); sync(); }   // the browser's own player
-  var tried = false;
-  function go() {
-    var p = v.play();
-    if (p && p.catch) p.catch(function () { if (tried) native(); sync(); });
-    sync();
-  }
-  v.addEventListener("error", function () { box.classList.add("broken"); });
-  play.addEventListener("click", function () {
-    tried = true; go();
-    setTimeout(function () { if (v.paused) native(); }, 1500);   // still not playing after a tap: fall back
-  });
-  v.addEventListener("play", sync); v.addEventListener("pause", sync);
-  v.addEventListener("click", function () { v.paused ? go() : v.pause(); });
-  snd.addEventListener("click", function () {
-    v.muted = !v.muted; snd.textContent = v.muted ? "🔇 Sound off" : "🔊 Sound on";
-    if (v.paused) go();
-  });
-  go();   // autoplay can be blocked (low power mode, data saver): then the play button shows
-})();
+/* advert: loops with the sound off; nudge it to play in case the browser held autoplay back */
+(function () { var v = document.getElementById("ad"); v.muted = true; function go() { var p = v.play(); if (p && p.catch) p.catch(function () {}); } go(); document.addEventListener("click", go, { once: true }); document.addEventListener("touchstart", go, { once: true, passive: true }); })();
 </script>
 </body>
 </html>
